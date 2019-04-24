@@ -145,5 +145,24 @@ import java.util.List;
             return list;
         }
 
+        public boolean addAll1(List<Student> list) {
+            SqlSession sqlSession = null;
+            boolean b = false;
+            try {
+                sqlSession = MybatisUtil.createSqlSession();
+                //添加数据进数据库
+                sqlSession.getMapper(StudentMapper.class).addAll(list);
+                b=true;
+                sqlSession.commit();
+            }catch (Exception e){
+                e.printStackTrace();
+                sqlSession.rollback();
+                b=false;
+            }finally {
+                MybatisUtil.closeSqlSession(sqlSession);
+            }
+            return b;
+        }
+
 
     }

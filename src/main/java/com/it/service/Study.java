@@ -27,5 +27,8 @@ public interface Study {
     //根据学生学号查询学生信息并返回 List集合
     public List findByLearnNumber(int i);
 
+    //批量插入学生
+    public boolean addAll1(List<Student> list);
+
 
 }

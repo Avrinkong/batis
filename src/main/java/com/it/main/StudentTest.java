@@ -4,6 +4,7 @@ import com.it.domain.Student;
 import com.it.serviceImpl.StudyImpl;
 import org.junit.Test;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class StudentTest {
@@ -13,7 +14,8 @@ public class StudentTest {
    //添加学生
    @Test
    public void add(){
-      student.setStudent_Name("蓝腮");
+
+      student.setStudent_Name("蓝3");
       student.setLaerning_Number(418);
       int i = study.addStudent(student);
       System.out.println(i);
@@ -64,4 +66,18 @@ public class StudentTest {
          System.out.println(s);
       }
    }
+
+   //批量插入
+    @Test
+    public void addAll2(){
+       List<Student> list = new LinkedList<Student>();
+        for (int i = 0; i <1000 ; i++) {
+            Student student1=new Student();
+            student1.setStudent_Name("测试"+ i);
+            student1.setLaerning_Number(i);
+            list.add(student1);
+        }
+        boolean b = study.addAll1(list);
+        System.out.println(b);
+    }
 }

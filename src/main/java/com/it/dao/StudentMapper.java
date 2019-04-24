@@ -27,4 +27,6 @@ public interface StudentMapper {
     //根据学生学号查询学生信息
     List<Student> queryByLearnNumber(Integer i);
 
+    Boolean addAll(List<Student> list);
+
 }
