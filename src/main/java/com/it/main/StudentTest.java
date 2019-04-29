@@ -70,14 +70,20 @@ public class StudentTest {
    //批量插入
     @Test
     public void addAll2(){
-       List<Student> list = new LinkedList<Student>();
-        for (int i = 0; i <1000 ; i++) {
-            Student student1=new Student();
-            student1.setStudent_Name("测试"+ i);
-            student1.setLaerning_Number(i);
-            list.add(student1);
-        }
-        boolean b = study.addAll1(list);
-        System.out.println(b);
+        long start=System.currentTimeMillis();
+       for (int j= 0; j <1000 ; j++) {
+
+          List<Student> list = new LinkedList<Student>();
+          for (int i = 0; i <1000 ; i++) {
+             Student student1=new Student();
+             student1.setStudent_Name("测试"+ i);
+             student1.setLaerning_Number(i);
+             list.add(student1);
+          }
+          boolean b = study.addAll1(list);
+
+       }
+       long end =System.currentTimeMillis();
+       System.out.println("插入100万条数据需要"+(end - start)/1000+"秒");
     }
 }
