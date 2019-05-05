@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--1 引入属性文件，在配置中占位使用 -->
+    <context:property-placeholder location="classpath*:db.properties" />
+
+    <!--2 配置JDBC数据库 -->
+    <bean id="datasource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+        <!--驱动类名 -->
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <!-- url -->
+        <property name="Url" value="${jdbc.url}" />
+        <!-- 用户名 -->
+        <property name="username" value="${jdbc.username}" />
+        <!-- 密码 -->
+        <property name="password" value="${jdbc.password}" />
+    </bean>
+
+    <!--3 会话工厂bean sqlSessionFactoryBean -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--&lt;!&ndash; MyBatis的XML配置 &ndash;&gt;-->
+        <!--<property name="configLocation" value="classpath:mybatis-config.xml"/>-->
+        <!-- 数据源 -->
+        <property name="dataSource" ref="datasource"></property>
+        <!-- 别名 -->
+        <!--<property name="typeAliasesPackage" value="com.it.pojo"></property>-->
+        <!-- mapper映射文件路径 -->
+        <property name="mapperLocations" value="classpath:StudentMapper.xml"></property>
+    </bean>
+
+    <!--4 自动扫描对象关系映射，MapperFactoryBean可以将数据映射接口转为Spring Bean -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--指定会话工厂，如果当前上下文中只定义了一个则该属性可省去 -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        <!-- 指定要自动扫描接口的基础包，实现接口 -->
+        <property name="basePackage" value="com.it.mapper"></property>
+    </bean>
+
+    <!--5 声明式事务管理 REQUIRED则表示需要事务支持，而SUPPORTS则不需要事务支持-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="select*" read-only="true"/>
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="appService" expression="execution(* com.it..service..*Service*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="appService"/>
+    </aop:config>
+
+    <!--定义事务管理器，由Spring管理事务 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="datasource"></property>
+    </bean>
+
+    <!--也可以使用注解驱动的事务管理，在方法上加@Transactional注解即可，在实际应用中多使用基于配置的方式 -->
+    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
+
+    <!--6 容器自动扫描IOC组件  -->
+    <context:component-scan base-package="com.it"></context:component-scan>
+
+    <!--7 aspectj支持自动代理实现AOP功能 -->
+    <aop:aspectj-autoproxy/>
+</beans>
