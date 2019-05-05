@@ -18,16 +18,20 @@
         <!--配置log4j-->
         <setting name="logImpl" value="LOG4J"/>
 
+        <setting name="lazyLoadingEnabled" value="true"/>
 
     </settings>
 
     <typeAliases>
-        <package name="com.it.domain"/>
+        <package name="com.it.pojo"/>
     </typeAliases>
     <!--连接数据库-->
 
-    <environments default="dev">
-        <!--环境变量：连接数据库-->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor" />
+    </plugins>
+   <!-- <environments default="dev">
+        &lt;!&ndash;环境变量：连接数据库&ndash;&gt;
         <environment id="dev">
             <transactionManager type="JDBC"></transactionManager>
             <dataSource type="POOLED">
@@ -37,10 +41,11 @@
                 <property name="password" value="${jdbc.password}"/>
             </dataSource>
         </environment>
-    </environments>
+    </environments>-->
     <mappers>
-        <mapper resource="com/it/dao/StudentMapper.xml"/>
+        <mapper resource="com/it/mapper/StudentMapper.xml"/>
     </mappers>
     <!-- Continue editing here -->
+    <!--分页插件-->
 
 </configuration>

@@ -1,9 +1,10 @@
 package com.it.service;
 
-import com.it.domain.Student;
+import com.it.pojo.Student;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public interface Study {
     /**
      * 添加学生

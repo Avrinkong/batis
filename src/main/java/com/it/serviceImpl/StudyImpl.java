@@ -1,14 +1,17 @@
 package com.it.serviceImpl;
 
-import com.it.dao.StudentMapper;
+import com.it.mapper.StudentMapper;
+import com.it.pojo.Student;
 import com.it.service.Study;
-import com.it.domain.Student;
-import com.it.utils.MybatisUtil;
-import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
     public class StudyImpl implements Study {
+    @Autowired
+        private StudentMapper studentMapper;
+
 
         /**
          * 添加学生
@@ -16,20 +19,8 @@ import java.util.List;
          * @return 学生ID
          */
         public int addStudent(Student student){
-            SqlSession sqlSession = null;
-            boolean b = false;
-            try {
-                sqlSession = MybatisUtil.createSqlSession();
-                //添加数据进数据库
-                sqlSession.getMapper(StudentMapper.class).addStudent(student);
-                System.out.println(student.getStudent_Id());
-                sqlSession.commit();
-            }catch (Exception e){
-                e.printStackTrace();
-                sqlSession.rollback();
-            }finally {
-                MybatisUtil.closeSqlSession(sqlSession);
-            }
+
+            int i = studentMapper.addStudent(student);
             return student.getStudent_Id();
         }
 
@@ -40,21 +31,11 @@ import java.util.List;
          * @return true or false
          */
         public boolean delete(int i){
-            SqlSession sqlSession = null;
-            boolean b =false;
-            try {
-                sqlSession = MybatisUtil.createSqlSession();
-                b = sqlSession.getMapper(StudentMapper.class).deleteStudent(i);
-                sqlSession.commit();
-                System.out.println(b);
-
-            }catch (Exception e){
-                e.printStackTrace();
-                sqlSession.rollback();
-            }finally {
-                MybatisUtil.closeSqlSession(sqlSession);
+            int a = studentMapper.deleteStudent(i);
+            if (a==0){
+                return false;
             }
-            return b;
+            return true;
         }
 
         /**
@@ -63,20 +44,9 @@ import java.util.List;
          * @return 修改是否成功
          */
         public boolean update(Student student) {
-            SqlSession sqlSession = null;
-            boolean b =false;
-            try {
-                sqlSession = MybatisUtil.createSqlSession();
-                b = sqlSession.getMapper(StudentMapper.class).updateStudent(student);
-                sqlSession.commit();
-
-            }catch (Exception e){
-                e.printStackTrace();
-                sqlSession.rollback();
-            }finally {
-                MybatisUtil.closeSqlSession(sqlSession);
-            }
-            return b;
+           int i = studentMapper.updateStudent(student);
+            if (i==0){return false;}
+            return true;
         }
 
 
@@ -86,20 +56,8 @@ import java.util.List;
          */
         public List<Student> findAll() {
                 //SqlSession对象
-                SqlSession sqlSession = null;
-                List<Student> list = null;
-                try {
-                    sqlSession = MybatisUtil.createSqlSession();
-                    //查询Student表中数据所有信息
-                    list = sqlSession.getMapper(StudentMapper.class).queryAll();
-                    sqlSession.commit();
-                }catch (Exception e){
-                    e.printStackTrace();
-                    sqlSession.rollback();
-                }finally {
-                    //释放资源
-                    MybatisUtil.closeSqlSession(sqlSession);
-                }
+
+            List<Student> list = studentMapper.queryAll();
             return list;
         }
 
@@ -109,18 +67,7 @@ import java.util.List;
          * @return List<Student>
          */
         public List<Student> findByName(String s) {
-            SqlSession sqlSession = null;
-            List<Student> list = null;
-            try {
-                sqlSession = MybatisUtil.createSqlSession();
-                list = sqlSession.getMapper(StudentMapper.class).queryByName(s);
-                sqlSession.commit();
-            }catch (Exception e){
-                e.printStackTrace();
-                sqlSession.rollback();
-            }finally {
-                MybatisUtil.closeSqlSession(sqlSession);
-            }
+            List<Student> list = studentMapper.queryByName(s);
             return list;
         }
 
@@ -130,38 +77,16 @@ import java.util.List;
          * @return
          */
         public List<Student> findByLearnNumber(int i) {
-            SqlSession sqlSession = null;
-            List<Student> list = null;
-            try {
-                sqlSession = MybatisUtil.createSqlSession();
-                list = sqlSession.getMapper(StudentMapper.class).queryByLearnNumber(i);
-                sqlSession.commit();
-            }catch (Exception e){
-                e.printStackTrace();
-                sqlSession.rollback();
-            }finally {
-                MybatisUtil.closeSqlSession(sqlSession);
-            }
+            List<Student> list = studentMapper.queryByLearnNumber(i);
             return list;
         }
 
         public boolean addAll1(List<Student> list) {
-            SqlSession sqlSession = null;
-            boolean b = false;
-            try {
-                sqlSession = MybatisUtil.createSqlSession();
-                //添加数据进数据库
-                sqlSession.getMapper(StudentMapper.class).addAll(list);
-                b=true;
-                sqlSession.commit();
-            }catch (Exception e){
-                e.printStackTrace();
-                sqlSession.rollback();
-                b=false;
-            }finally {
-                MybatisUtil.closeSqlSession(sqlSession);
+            int i = studentMapper.addAll(list);
+            if (i==0){
+                return false;
             }
-            return b;
+            return true;
         }
 
 
